@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 app.get('/api/product', (req, res) => {
 
 	Product.find({}, (err, products) => {
-		if (err) return res.status(500).send( { message: `Error al recuperar el producto: ${err}` } )
+		if (err) return res.status(500).send( { message: `Error al recuperar el listado de productos: ${err}` } )
 		if (!products) return res.status(404).send( { message: `No existen productos` } )
 
 		// res.status(200).send( { product: product })
@@ -55,11 +55,30 @@ app.post('/api/product', (req, res) => {
 })
 
 app.put('/api/product/:productId', (req, res) => {
+	let productId = req.params.productId
+	// campos a modificar
+	let update = req.body
 
+	Product.findByIdAndUpdate(productId, update, (err, productUpdated) => {
+		if (err) return res.status(500).send( { message: `Error al actualizar el producto: ${err}` })
+
+		res.status(200).send( { product: productUpdated })
+	})
 })
 
 app.delete('/api/product/:productId', (req, res) => {
+	let productId = req.params.productId
 
+	Product.findById(productId, (err, product) => {
+		if (err) return res.status(500).send( { message: `Error al borrar el producto: ${err}` })
+		if (!product) return res.status(404).send( { message: `El producto no existe` } )
+
+		product.remove(err => {
+			if (err) return res.status(500).send( { message: `Error al borrar el producto: ${err}` })
+
+			res.status(200).send( { message: `Producto eliminado` })
+		})
+	})
 })
 
 
