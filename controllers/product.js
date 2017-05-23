@@ -35,9 +35,8 @@ function saveProduct (req, res) {
 	product.description = req.body.description
 
 	product.save((err, productStored) => {
-		if (err) {
-			res.status(500).send( { message: `Error al guardar en la BD: ${err}` })
-		}
+		if (err) res.status(500).send( { message: `Error al guardar en la BD: ${err}` })
+
 		res.status(200).send({ product: productStored })
 	})
 }
