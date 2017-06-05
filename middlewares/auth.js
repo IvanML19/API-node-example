@@ -7,15 +7,13 @@ function isAuth(req, res, next) { // next pasa la funcionalidad al ctrldr final
 
 	const token = req.headers.authorization.split(" ")[1] // el segundo[1] elemento del array tendrá el token
 
-	const payload = jwt.decode(token, config.SECRET_TOKEN)
-
 	services.decodeToken(token)
 		.then(response => {
 			req.user = response
 			next()
 		})
 		.catch(response => {
-			res.status(response.status)
+			res.status(response.status).send({ message: 'No tienes autorización - Token inválido' })
 		})
 }
 
